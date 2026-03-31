@@ -58,6 +58,7 @@
 */
 
 #include "spo2_algorithm.h"
+bool calc_end = 1;
 
 const uint8_t uch_spo2_table[184]={ 95, 95, 95, 96, 96, 96, 97, 97, 97, 97, 97, 98, 98, 98, 98, 98, 99, 99, 99, 99,
               99, 99, 99, 99, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,
@@ -90,6 +91,7 @@ void maxim_heart_rate_and_oxygen_saturation(uint32_t *pun_ir_buffer, int32_t n_i
 * \retval       None
 */
 {
+	calc_end = 0;
   uint32_t un_ir_mean;
   int32_t k, n_i_ratio_count;
   int32_t i, n_exact_ir_valley_locs_count, n_middle_idx;
@@ -207,6 +209,7 @@ void maxim_heart_rate_and_oxygen_saturation(uint32_t *pun_ir_buffer, int32_t n_i
     *pn_spo2 =  -999 ; // do not use SPO2 since signal an_ratio is out of range
     *pch_spo2_valid  = 0;
   }
+  calc_end = 1;
 }
 
 

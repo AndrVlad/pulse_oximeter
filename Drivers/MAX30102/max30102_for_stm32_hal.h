@@ -114,8 +114,8 @@ typedef enum max30102_multi_led_ctrl_t
 typedef struct max30102_t
 {
     I2C_HandleTypeDef *_ui2c;
-    uint32_t _ir_samples[150];
-    uint32_t _red_samples[150];
+    uint32_t _ir_samples[200];
+    uint32_t _red_samples[200];
     uint16_t buffer_write_index;  // Текущий индекс для записи
     uint16_t buffer_available;     // Количество доступных для чтения данных
     uint16_t buffer_read_index;

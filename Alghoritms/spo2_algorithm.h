@@ -68,7 +68,7 @@
 #define min(x,y) ((x) < (y) ? (x) : (y)) //Defined in Arduino.h
 
 #include <stdio.h>
-
+#include <stdbool.h>
 //uch_spo2_table is approximated as  -45.060*ratioAverage* ratioAverage + 30.354 *ratioAverage + 94.845 ;
 
 static  int32_t an_x[ BUFFER_SIZE]; //ir
@@ -81,5 +81,7 @@ void maxim_peaks_above_min_height(int32_t *pn_locs, int32_t *n_npks,  int32_t  *
 void maxim_remove_close_peaks(int32_t *pn_locs, int32_t *pn_npks, int32_t *pn_x, int32_t n_min_distance);
 void maxim_sort_ascend(int32_t  *pn_x, int32_t n_size);
 void maxim_sort_indices_descend(int32_t  *pn_x, int32_t *pn_indx, int32_t n_size);
+
+extern bool calc_end;
 
 #endif /* ALGORITHM_H_ */

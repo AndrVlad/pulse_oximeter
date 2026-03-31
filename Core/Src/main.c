@@ -60,16 +60,18 @@ uint8_t en_reg[2] = {0};
 uint8_t int_reg1[2] = {0};
 uint8_t int_reg2[2] = {0};
 uint8_t uart1_buf = 0xFF;
-uint32_t ir_out[50];
-uint32_t red_out[50];
+uint32_t ir_out[100];
+uint32_t red_out[100];
 bool uart1_rx_complete = 0;
 bool start_meas = 0;
 bool stop_meas = 0;
 bool tim4_ovflw = 0;
 bool reset_sensor = 0;
 
+int8_t cnt1,cnt2 = 0;
+
 int8_t spo2_valid = 0, heart_rate_valid = 0;
-int32_t buf_len = 50, spo2 = 0, heart_rate = 0;
+int32_t buf_len = 100, spo2 = 0, heart_rate = 0;
 
 /* USER CODE END PV */
 
@@ -210,12 +212,12 @@ int main(void)
 
 			 // получение готовых данных для анализа
 			 max30102_get_samples_for_processing(&max30102, ir_out, red_out);
-
-			 // выполнение расчета сатурации
-			 maxim_heart_rate_and_oxygen_saturation(ir_out, buf_len, red_out, &spo2, &spo2_valid, &heart_rate, &heart_rate_valid);
-
-
-
+			 cnt1++;
+			 if(calc_end) {
+				 // выполнение расчета сатурации
+				 maxim_heart_rate_and_oxygen_saturation(ir_out, buf_len, red_out, &spo2, &spo2_valid, &heart_rate, &heart_rate_valid);
+				 cnt2++;
+			 }
 		 }
 
 		 //

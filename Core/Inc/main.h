@@ -67,7 +67,8 @@ extern bool tim4_ovflw;
 #define LED_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
-
+#define CIRCULAR_BUF_NUM 200
+#define SAMPLES_NUM 100
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

@@ -443,45 +443,45 @@ void max30102_read_fifo(max30102_t *obj)
         obj->_red_samples[obj->buffer_write_index] = red_sample;
 
         // Обновляем индекс записи
-        obj->buffer_write_index = (obj->buffer_write_index + 1) % 150;
+        obj->buffer_write_index = (obj->buffer_write_index + 1) % CIRCULAR_BUF_NUM;
 
         // Увеличиваем счетчик доступных данных
-        if (obj->buffer_available < 150) {
+        if (obj->buffer_available < CIRCULAR_BUF_NUM) {
         	obj->buffer_available++;
         } else {
         	// Сдвиг индекса чтения при переполнении
-        	obj->buffer_read_index = (obj->buffer_read_index + 1) % 150;
+        	obj->buffer_read_index = (obj->buffer_read_index + 1) % CIRCULAR_BUF_NUM;
         }
     }
-    // Устанавливаем флаг, если накопилось 50 или более выборок
-    if (obj->buffer_available >= 50 && !obj->buffer_ready) {
+    // Устанавливаем флаг, если накопилось необходимое количество выборок
+    if (obj->buffer_available >= SAMPLES_NUM && !obj->buffer_ready) {
     	obj->buffer_ready = 1;
     }
 }
 
 void max30102_get_samples_for_processing(max30102_t *obj, uint32_t *ir_out, uint32_t *red_out) {
     // Проверка на всякий случай
-    if (!obj->buffer_ready || obj->buffer_available < 50) {
+    if (!obj->buffer_ready || obj->buffer_available < 100) {
         return;
     }
 
-    uint8_t samples_to_copy = 50;
+    uint8_t samples_to_copy = SAMPLES_NUM;
     uint16_t current_read_index = obj->buffer_read_index;
 
-    // Копируем 50 выборок из буфера на каждый канал
+    // Копируем необходимое количество выборок из буфера на каждый канал
     for (uint8_t i = 0; i < samples_to_copy; i++) {
         ir_out[i] = obj->_ir_samples[current_read_index];
         red_out[i] = obj->_red_samples[current_read_index];
 
-        current_read_index = (current_read_index + 1) % 150;
+        current_read_index = (current_read_index + 1) % CIRCULAR_BUF_NUM;
     }
 
     // Обновляем индекс и счетчик
     obj->buffer_read_index = current_read_index;
     obj->buffer_available -= samples_to_copy;
 
-    // Сбрасываем флаг готовности, если данных меньше 50
-    if (obj->buffer_available < 50) {
+    // Сбрасываем флаг готовности, если готовых данных меньше необходимого количества
+    if (obj->buffer_available < SAMPLES_NUM) {
         obj->buffer_ready = 0;
     }
 }
