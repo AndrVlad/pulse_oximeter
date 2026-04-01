@@ -121,6 +121,7 @@ typedef struct max30102_t
     uint16_t buffer_read_index;
     uint8_t _interrupt_flag;
     uint8_t buffer_ready; // данные готовы для копирования
+    bool buf_init;
 } max30102_t;
 
 void max30102_plot(uint32_t ir_sample, uint32_t red_sample);

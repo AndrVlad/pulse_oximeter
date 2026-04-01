@@ -132,20 +132,22 @@ int main(void)
     max30102_init(&max30102, &hi2c1);
     max30102_reset(&max30102);
     max30102_clear_fifo(&max30102);
-    max30102_set_fifo_config(&max30102, max30102_smp_ave_4, 1, 3);
+    max30102_set_fifo_config(&max30102, max30102_smp_ave_1, 1, 3);
     max30102_shutdown(&max30102, 1);
 
     // Sensor settings
     max30102_set_led_pulse_width(&max30102, max30102_pw_18_bit);
     max30102_set_adc_resolution(&max30102, max30102_adc_4096);
     max30102_set_sampling_rate(&max30102, max30102_sr_100);
-    max30102_set_led_current_1(&max30102, 6.2);
-    max30102_set_led_current_2(&max30102, 6.2);
+    //max30102_set_led_current_1(&max30102, 6.2);
+   // max30102_set_led_current_2(&max30102, 6.2);
+   max30102_set_led_current_1(&max30102, 6.2);
+   max30102_set_led_current_2(&max30102, 6.2);
 
     // Enter SpO2 mode
     max30102_set_mode(&max30102, max30102_spo2);
     max30102_set_a_full(&max30102, 1);
-
+    max30102_set_alc_ovf(&max30102, 1);
     // Initiate 1 temperature measurement
     max30102_set_die_temp_en(&max30102, 1);
     max30102_set_die_temp_rdy(&max30102, 1);
@@ -207,7 +209,7 @@ int main(void)
 		 // Опрос регистров прерываний и считывание данных с датчика в буферы,
 		 // где они накапливаются для дальнейшей их обработки
 		 max30102_interrupt_handler(&max30102);
-
+		 //max30102_read_fifo(&max30102);
 		 if (max30102_check_ready_data(&max30102)) { // если данные готовы для их анализа
 
 			 // получение готовых данных для анализа
@@ -444,7 +446,7 @@ static void MX_TIM4_Init(void)
   htim4.Instance = TIM4;
   htim4.Init.Prescaler = 720;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim4.Init.Period = 15000;
+  htim4.Init.Period = 4000;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim4) != HAL_OK)

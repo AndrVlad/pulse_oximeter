@@ -68,7 +68,7 @@ extern bool tim4_ovflw;
 
 /* USER CODE BEGIN Private defines */
 #define CIRCULAR_BUF_NUM 200
-#define SAMPLES_NUM 100
+#define SAMPLES_NUM 25
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

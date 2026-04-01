@@ -6,7 +6,7 @@ extern "C"
 {
 #endif
 
-int cnt_data, temp_cnt = 0, num_samples;
+int cnt_data, temp_cnt = 0, num_samples, amb_cnt = 0;
 
 /**
  * @brief Built-in plotting function. Called during an interrupt to print/plot the current sample.
@@ -36,6 +36,7 @@ void max30102_init(max30102_t *obj, I2C_HandleTypeDef *hi2c)
     obj->buffer_read_index = 0;
     obj->buffer_ready = 0;
     obj->buffer_write_index = 0;
+    obj->buf_init = 0;
 }
 
 /**
@@ -183,6 +184,12 @@ void max30102_interrupt_handler(max30102_t *obj)
     // Interrupt flag in registers 0x00 and 0x01 are cleared on read
     max30102_read(obj, MAX30102_INTERRUPT_STATUS_1, reg, 2);
 
+    if ((reg[0] >> MAX30102_INTERRUPT_ALC_OVF) & 0x01)
+    {
+        // Ambient light overflow
+    	amb_cnt++;
+    }
+
     if ((reg[0] >> MAX30102_INTERRUPT_A_FULL) & 0x01)
     {
         // FIFO almost full
@@ -196,10 +203,7 @@ void max30102_interrupt_handler(max30102_t *obj)
 
     }
 
-    if ((reg[0] >> MAX30102_INTERRUPT_ALC_OVF) & 0x01)
-    {
-        // Ambient light overflow
-    }
+
 
     if ((reg[1] >> MAX30102_INTERRUPT_DIE_TEMP_RDY) & 0x01)
     {
@@ -412,6 +416,7 @@ void max30102_clear_fifo(max30102_t *obj)
     obj->buffer_read_index = 0;
     obj->buffer_ready = 0;
     obj->buffer_write_index = 0;
+    obj->buf_init = 0;
 }
 
 /**
@@ -437,8 +442,8 @@ void max30102_read_fifo(max30102_t *obj)
     {
     	uint8_t sample[6];
         max30102_read(obj, MAX30102_FIFO_DATA, sample, 6);
-        uint32_t ir_sample = ((uint32_t)(sample[0] << 16) | (uint32_t)(sample[1] << 8) | (uint32_t)(sample[2])) & 0x3ffff;
-        uint32_t red_sample = ((uint32_t)(sample[3] << 16) | (uint32_t)(sample[4] << 8) | (uint32_t)(sample[5])) & 0x3ffff;
+        uint32_t red_sample = ((uint32_t)(sample[0] << 16) | (uint32_t)(sample[1] << 8) | (uint32_t)(sample[2])) & 0x3ffff;
+        uint32_t ir_sample = ((uint32_t)(sample[3] << 16) | (uint32_t)(sample[4] << 8) | (uint32_t)(sample[5])) & 0x3ffff;
         obj->_ir_samples[obj->buffer_write_index] = ir_sample;
         obj->_red_samples[obj->buffer_write_index] = red_sample;
 
@@ -461,24 +466,41 @@ void max30102_read_fifo(max30102_t *obj)
 
 void max30102_get_samples_for_processing(max30102_t *obj, uint32_t *ir_out, uint32_t *red_out) {
     // Проверка на всякий случай
-    if (!obj->buffer_ready || obj->buffer_available < 100) {
+    if (!obj->buffer_ready) {
         return;
     }
 
-    uint8_t samples_to_copy = SAMPLES_NUM;
+    uint8_t samples_to_copy_init = SAMPLES_NUM + 75;
     uint16_t current_read_index = obj->buffer_read_index;
 
-    // Копируем необходимое количество выборок из буфера на каждый канал
-    for (uint8_t i = 0; i < samples_to_copy; i++) {
-        ir_out[i] = obj->_ir_samples[current_read_index];
-        red_out[i] = obj->_red_samples[current_read_index];
-
-        current_read_index = (current_read_index + 1) % CIRCULAR_BUF_NUM;
+    if (!obj->buf_init) {
+    	static int init_num;
+    	for (init_num = 0; init_num < samples_to_copy_init; init_num++) {
+			ir_out[init_num] = obj->_ir_samples[current_read_index];
+			red_out[init_num] = obj->_red_samples[current_read_index];
+			current_read_index = (current_read_index + 1) % CIRCULAR_BUF_NUM;
+		}
+    	if (init_num >= 99) {
+    		obj->buf_init = 1;
+    		init_num = 0;
+    	}
+    } else {
+    	// сдвиг в начало массива 75 старых элементов
+    	for (int i = 0; i < 75; i++) {
+    		ir_out[i] = ir_out[i+25];
+    		red_out[i] = red_out[i+25];
+    	}
+    	// добавление в конец массива 25 новых элементов
+    	for (int i = 75; i < 100; i++) {
+    		ir_out[i] = obj->_ir_samples[current_read_index];
+    		red_out[i] = obj->_red_samples[current_read_index];
+    		current_read_index = (current_read_index + 1) % CIRCULAR_BUF_NUM;
+    	}
     }
 
     // Обновляем индекс и счетчик
     obj->buffer_read_index = current_read_index;
-    obj->buffer_available -= samples_to_copy;
+    obj->buffer_available -= SAMPLES_NUM;
 
     // Сбрасываем флаг готовности, если готовых данных меньше необходимого количества
     if (obj->buffer_available < SAMPLES_NUM) {
