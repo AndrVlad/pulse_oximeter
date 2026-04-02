@@ -23,3 +23,7 @@
 "./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.o"
 "./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.o"
 "./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.o"
+"./Drivers/W25Q/w25q_spi.o"
+"./Libraries/Src/SPI_Connection.o"
+"./Libraries/Src/protocol_parser.o"
+"./Libraries/Src/sensor_utils.o"

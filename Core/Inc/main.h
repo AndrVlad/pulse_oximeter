@@ -49,11 +49,18 @@ extern "C" {
 
 /* USER CODE END EM */
 
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
+
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 extern bool tim4_ovflw;
+extern SPI_HandleTypeDef hspi2;
+extern TIM_HandleTypeDef htim2;
+extern uint8_t data_buf[256];
+extern uint8_t page_pos_ptr;
+extern volatile uint16_t page_ptr;
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/

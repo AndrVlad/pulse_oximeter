@@ -5,23 +5,23 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../Drivers/MAX30102/max30102_for_stm32_hal.c 
+../Drivers/W25Q/w25q_spi.c 
 
 OBJS += \
-./Drivers/MAX30102/max30102_for_stm32_hal.o 
+./Drivers/W25Q/w25q_spi.o 
 
 C_DEPS += \
-./Drivers/MAX30102/max30102_for_stm32_hal.d 
+./Drivers/W25Q/w25q_spi.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
-Drivers/MAX30102/%.o Drivers/MAX30102/%.su Drivers/MAX30102/%.cyclo: ../Drivers/MAX30102/%.c Drivers/MAX30102/subdir.mk
+Drivers/W25Q/%.o Drivers/W25Q/%.su Drivers/W25Q/%.cyclo: ../Drivers/W25Q/%.c Drivers/W25Q/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I"C:/Users/vlado/STM32CubeIDE/workspace_1.12.0/pulse_oximeter/Drivers/W25Q" -I"C:/Users/vlado/STM32CubeIDE/workspace_1.12.0/pulse_oximeter/Drivers/MAX30102" -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I"C:/Users/vlado/STM32CubeIDE/workspace_1.12.0/pulse_oximeter/Alghoritms" -I../Drivers/W25Q -I"C:/Users/vlado/STM32CubeIDE/workspace_1.12.0/pulse_oximeter/Libraries/Inc" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfloat-abi=soft -mthumb -o "$@"
 
-clean: clean-Drivers-2f-MAX30102
+clean: clean-Drivers-2f-W25Q
 
-clean-Drivers-2f-MAX30102:
-	-$(RM) ./Drivers/MAX30102/max30102_for_stm32_hal.cyclo ./Drivers/MAX30102/max30102_for_stm32_hal.d ./Drivers/MAX30102/max30102_for_stm32_hal.o ./Drivers/MAX30102/max30102_for_stm32_hal.su
+clean-Drivers-2f-W25Q:
+	-$(RM) ./Drivers/W25Q/w25q_spi.cyclo ./Drivers/W25Q/w25q_spi.d ./Drivers/W25Q/w25q_spi.o ./Drivers/W25Q/w25q_spi.su
 
-.PHONY: clean-Drivers-2f-MAX30102
+.PHONY: clean-Drivers-2f-W25Q
 

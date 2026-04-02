@@ -27,4 +27,6 @@ Core/Src \
 Core/Startup \
 Drivers/MAX30102 \
 Drivers/STM32F1xx_HAL_Driver/Src \
+Drivers/W25Q \
+Libraries/Src \
 
