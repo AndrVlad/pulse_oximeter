@@ -26,3 +26,4 @@ max30102_for_stm32_hal.c:427:6:max30102_read_fifo	6
 max30102_for_stm32_hal.c:467:6:max30102_get_samples_for_processing	8
 max30102_for_stm32_hal.c:511:6:max30102_check_ready_data	2
 max30102_for_stm32_hal.c:527:6:max30102_read_temp	1
+max30102_for_stm32_hal.c:533:6:max30102_check	2

@@ -8,6 +8,7 @@
 #include <string.h>
 
 #define MAX30102_I2C_ADDR 0x57
+#define MAX30102_PART_ID_VAL 0x15
 #define MAX30102_I2C_TIMEOUT 1000
 
 #define MAX30102_BYTES_PER_SAMPLE 6
@@ -58,6 +59,8 @@
 #define MAX30102_DIE_TFRAC_INCREMENT 0.0625f
 #define MAX30102_DIE_TEMP_CONFIG 0x21
 #define MAX30102_DIE_TEMP_EN 1
+
+#define MAX30102_PART_ID 0xFF
 
 typedef enum max30102_mode_t
 {
@@ -163,5 +166,7 @@ void max30102_read_temp(max30102_t *obj, int8_t *temp_int, uint8_t *temp_frac);
 
 bool max30102_check_ready_data (max30102_t *obj);
 void max30102_get_samples_for_processing(max30102_t *obj, uint32_t *ir_out, uint32_t *red_out);
+
+bool max30102_check(max30102_t *obj);
 
 #endif

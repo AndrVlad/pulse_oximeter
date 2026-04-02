@@ -21,11 +21,12 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "max30102_for_stm32_hal.h"
 #include "spo2_algorithm.h"
 #include "SPI_connection.h"
 #include "protocol_parser.h"
+#include "w25q_spi.h"
 #include "stdio.h"
+#include "Common.h"
 #include <string.h>
 #include <stdbool.h>
 /* USER CODE END Includes */
@@ -72,7 +73,7 @@ bool tim4_ovflw = 0;
 bool reset_sensor = 0;
 
 int8_t cnt1,cnt2 = 0;
-
+max30102_t max30102;
 int8_t spo2_valid = 0, heart_rate_valid = 0;
 int32_t buf_len = 100, spo2 = 0, heart_rate = 0;
 
@@ -80,7 +81,8 @@ int32_t buf_len = 100, spo2 = 0, heart_rate = 0;
 uint8_t data_buf[256];
 volatile uint16_t page_ptr = 0;
 uint8_t page_pos_ptr = 0;
-
+extern w25_info_t w25_info;
+uint8_t dt1 = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -99,7 +101,24 @@ static void MX_TIM2_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-max30102_t max30102;
+void writeDataToFlash(int32_t spo2) {
+	static union
+	{
+		uint16_t word;
+		uint8_t bytes[2];
+	} result_data;
+
+	result_data.word = (uint16_t)(spo2*100.0);
+	W25_Write_Page(result_data.bytes, page_ptr, page_pos_ptr*2, 2); //save 2 bytes to flash
+	page_pos_ptr++;
+	if (page_pos_ptr == 127) //page is full
+	{
+		page_ptr++;
+		page_pos_ptr = 0;
+	}
+	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_2);
+	return;
+}
 /* USER CODE END 0 */
 
 /**
@@ -141,32 +160,6 @@ int main(void)
 
   sensorInit();
 
-  // Initiation
-    max30102_init(&max30102, &hi2c1);
-    max30102_reset(&max30102);
-    max30102_clear_fifo(&max30102);
-    max30102_set_fifo_config(&max30102, max30102_smp_ave_1, 1, 3);
-    max30102_shutdown(&max30102, 1);
-
-    // Sensor settings
-    max30102_set_led_pulse_width(&max30102, max30102_pw_18_bit);
-    max30102_set_adc_resolution(&max30102, max30102_adc_4096);
-    max30102_set_sampling_rate(&max30102, max30102_sr_100);
-    //max30102_set_led_current_1(&max30102, 6.2);
-   // max30102_set_led_current_2(&max30102, 6.2);
-   max30102_set_led_current_1(&max30102, 6.2);
-   max30102_set_led_current_2(&max30102, 6.2);
-
-    // Enter SpO2 mode
-    max30102_set_mode(&max30102, max30102_spo2);
-    max30102_set_a_full(&max30102, 1);
-    max30102_set_alc_ovf(&max30102, 1);
-    // Initiate 1 temperature measurement
-    max30102_set_die_temp_en(&max30102, 1);
-    max30102_set_die_temp_rdy(&max30102, 1);
-
-    max30102_read(&max30102, 0xFF, en_reg, 1);
-
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -178,6 +171,7 @@ int main(void)
 		  parserFSM();
 	  }
 
+/*
 	 if (start_meas) {
 		 max30102_shutdown(&max30102, 0);
 		 start_meas = 0;
@@ -219,27 +213,35 @@ int main(void)
 
 		    max30102_read(&max30102, 0xFF, en_reg, 1);
 	 }
+	*/
 
-	 if (tim4_ovflw) {
+
+	if (tim4_ovflw) {
+		// сброс таймера
 		 __HAL_TIM_SET_COUNTER(&htim4, 0);
 		 tim4_ovflw = 0;
+
 		 // Опрос регистров прерываний и считывание данных с датчика в буферы,
 		 // где они накапливаются для дальнейшей их обработки
 		 max30102_interrupt_handler(&max30102);
-		 //max30102_read_fifo(&max30102);
-		 if (max30102_check_ready_data(&max30102)) { // если данные готовы для их анализа
 
+		 if (max30102_check_ready_data(&max30102)) { // если данные готовы для их анализа
 			 // получение готовых данных для анализа
 			 max30102_get_samples_for_processing(&max30102, ir_out, red_out);
 			 cnt1++;
+
 			 if(calc_end) {
 				 // выполнение расчета сатурации
 				 maxim_heart_rate_and_oxygen_saturation(ir_out, buf_len, red_out, &spo2, &spo2_valid, &heart_rate, &heart_rate_valid);
 				 cnt2++;
+
+				 // проверка на корректность значения сатурации
+				 if (spo2_valid && (spo2 <= 100 && spo2 >=70)) {
+					 // запись во флеш корректного значения
+					 writeDataToFlash(spo2);
+				 }
 			 }
 		 }
-
-		 //
 	 }
 
     /* USER CODE END WHILE */
@@ -382,7 +384,7 @@ static void MX_SPI2_Init(void)
   hspi2.Init.DataSize = SPI_DATASIZE_8BIT;
   hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi2.Init.CLKPhase = SPI_PHASE_1EDGE;
-  hspi2.Init.NSS = SPI_NSS_HARD_INPUT;
+  hspi2.Init.NSS = SPI_NSS_SOFT;
   hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -600,17 +602,23 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, my_CTRL_Pin|FLASH_nRST_Pin|FLASH_CS_GPIO_Port_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, FLASH_nRST_Pin|FLASH_CS_GPIO_Port_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : my_CTRL_Pin FLASH_nRST_Pin FLASH_CS_GPIO_Port_Pin */
-  GPIO_InitStruct.Pin = my_CTRL_Pin|FLASH_nRST_Pin|FLASH_CS_GPIO_Port_Pin;
+  /*Configure GPIO pins : FLASH_nRST_Pin FLASH_CS_GPIO_Port_Pin */
+  GPIO_InitStruct.Pin = FLASH_nRST_Pin|FLASH_CS_GPIO_Port_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : SPI_CS_Pin */
+  GPIO_InitStruct.Pin = SPI_CS_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(SPI_CS_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LED_Pin */
   GPIO_InitStruct.Pin = LED_Pin;
@@ -618,6 +626,10 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LED_GPIO_Port, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */

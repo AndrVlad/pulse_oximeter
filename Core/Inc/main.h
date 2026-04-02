@@ -32,6 +32,7 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdbool.h>
+
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -58,18 +59,22 @@ void Error_Handler(void);
 extern bool tim4_ovflw;
 extern SPI_HandleTypeDef hspi2;
 extern TIM_HandleTypeDef htim2;
+extern TIM_HandleTypeDef htim4;
 extern uint8_t data_buf[256];
 extern uint8_t page_pos_ptr;
 extern volatile uint16_t page_ptr;
+extern I2C_HandleTypeDef hi2c1;
+extern uint8_t dt1;
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define my_CTRL_Pin GPIO_PIN_0
-#define my_CTRL_GPIO_Port GPIOA
 #define FLASH_nRST_Pin GPIO_PIN_3
 #define FLASH_nRST_GPIO_Port GPIOA
 #define FLASH_CS_GPIO_Port_Pin GPIO_PIN_4
 #define FLASH_CS_GPIO_Port_GPIO_Port GPIOA
+#define SPI_CS_Pin GPIO_PIN_12
+#define SPI_CS_GPIO_Port GPIOB
+#define SPI_CS_EXTI_IRQn EXTI15_10_IRQn
 #define LED_Pin GPIO_PIN_3
 #define LED_GPIO_Port GPIOB
 

@@ -13,7 +13,7 @@
 #include <string.h>
 
 /* Идентификатор датчика */
-#define SENSOR_ID 			0x2C
+#define SENSOR_ID 			0x1E
 
 /* Длина кадра ответа */
 #define CONTROL_FRAME_LEN 	10

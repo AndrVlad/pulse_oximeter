@@ -26,3 +26,4 @@
 ../Drivers/MAX30102/max30102_for_stm32_hal.c:467:6:max30102_get_samples_for_processing	40	static
 ../Drivers/MAX30102/max30102_for_stm32_hal.c:511:6:max30102_check_ready_data	16	static
 ../Drivers/MAX30102/max30102_for_stm32_hal.c:527:6:max30102_read_temp	24	static
+../Drivers/MAX30102/max30102_for_stm32_hal.c:533:6:max30102_check	24	static

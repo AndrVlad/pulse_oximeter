@@ -529,6 +529,18 @@ void max30102_read_temp(max30102_t *obj, int8_t *temp_int, uint8_t *temp_frac)
     max30102_read(obj, MAX30102_DIE_TINT, (uint8_t *)temp_int, 1);
     max30102_read(obj, MAX30102_DIE_TFRAC, temp_frac, 1);
 }
+/* Выполняет проверку работоспособности микросхемы по возвращаемому идентификатору */
+bool max30102_check(max30102_t *obj) {
+
+	uint8_t en_reg;
+	max30102_read(obj, MAX30102_PART_ID, &en_reg, 1);
+
+	if (en_reg == MAX30102_PART_ID_VAL) {
+		return true;
+	} else {
+		return false;
+	}
+};
 
 #ifdef __cplusplus
 }
