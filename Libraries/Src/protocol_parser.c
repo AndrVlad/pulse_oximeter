@@ -145,7 +145,8 @@ void fillDataFrame() {
 	response[258] = 0xFF;
 	response[259] = 0x0B;
 
-	response[257] = FSM_state;
+	// для отладки
+	//response[257] = FSM_state;
 
 	// формирование CRC для кадра в порядке MSB
 	uint32_t crc = calculateCRC32(response,FRAME_LEN-4);
@@ -223,12 +224,13 @@ void fillResponseFrame(uint16_t response_code, uint16_t command_code) {
 	}
 
 	// для отладки
+	/*
 	response[253] = page_ptr;
 	response[254] = read.cur_page_num;
 	response[255] = page_pos_ptr;
 	response[256] = read.page_offset_read;
 	response[257] = FSM_state;
-
+	*/
 	response[258] = 0xFF;
 	response[259] = 0x0D;
 	// формирование CRC для кадра в порядке MSB

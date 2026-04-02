@@ -79,8 +79,8 @@ extern uint8_t dt1;
 #define LED_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
-#define CIRCULAR_BUF_NUM 200
-#define SAMPLES_NUM 25
+#define CIRCULAR_BUF_NUM 200	// размер кольцевого буфера с данными с микросхемы
+#define SAMPLES_NUM 25			// число выборок, которые добавляются в буфер с данными для расчета сатурации
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

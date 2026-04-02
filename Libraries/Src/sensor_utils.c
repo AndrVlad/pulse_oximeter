@@ -11,12 +11,10 @@
 #include "protocol_parser.h"
 #include "SPI_Connection.h"
 #include "Common.h"
-//#include "max30102_for_stm32_hal.h"
 #include <stdbool.h>
 #include <stdint.h>
 
 bool need_selfcheck = 0;
-//max30102_t max30102;
 
 /* Выполняет проверку работоспособности датчика
  * Возврат: 1 - датчик работоспособен
@@ -31,6 +29,7 @@ bool sensorSelfCheck() {
 
 }
 
+/* Выполняет инициализацию микросхемы */
 void sensorChipInit() {
 
 	// Инициализация микросхемы
@@ -59,6 +58,7 @@ void sensorChipInit() {
 	return;
 }
 
+/* Выполняет сброс микросхемы */
 void resetSensorChip() {
 
 	// остановка и сброс таймера опроса регистров прерываний микросхемы
@@ -70,13 +70,14 @@ void resetSensorChip() {
 	return;
 }
 
+/* Выполняет остановку работы микросхемы */
 void stopSensorChip() {
 
 	// выключение микросхемы
 	max30102_shutdown(&max30102, 1);
 	return;
 }
-
+/* Выполняет включение микросхемы */
 void enableSensorChip() {
 
 	// включение микросхемы

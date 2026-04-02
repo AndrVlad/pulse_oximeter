@@ -59,30 +59,23 @@ TIM_HandleTypeDef htim4;
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
-uint8_t en_reg2[2] = {0};
-uint8_t en_reg[2] = {0};
-uint8_t int_reg1[2] = {0};
-uint8_t int_reg2[2] = {0};
-uint8_t uart1_buf = 0xFF;
-uint32_t ir_out[100];
-uint32_t red_out[100];
-bool uart1_rx_complete = 0;
-bool start_meas = 0;
-bool stop_meas = 0;
-bool tim4_ovflw = 0;
-bool reset_sensor = 0;
 
-int8_t cnt1,cnt2 = 0;
-max30102_t max30102;
-int8_t spo2_valid = 0, heart_rate_valid = 0;
-int32_t buf_len = 100, spo2 = 0, heart_rate = 0;
+uint32_t ir_out[100];	// буфер значений ИК-канала
+uint32_t red_out[100];	// буфер значений канала красного светодиода
+bool tim4_ovflw = 0;	// флаг переполнения таймера
+
+int8_t cnt1,cnt2 = 0;	// счетчики вызовов (для отладки)
+max30102_t max30102;	// объект структуры для работы с микросхемой
+
+// переменные результата расчета сатурации
+int8_t spo2_valid = 0, heart_rate_valid = 0; 		// признаки корректности полученных расчетов сатурации и ЧСС
+int32_t buf_len = 100, spo2 = 0, heart_rate = 0; 	// значения сатурации и ЧСС
 
 /* W25Q variables */
-uint8_t data_buf[256];
-volatile uint16_t page_ptr = 0;
-uint8_t page_pos_ptr = 0;
+uint8_t data_buf[256];				// буфер с данными
+volatile uint16_t page_ptr = 0;		// указатель номера страницы флеш-памяти в которую идет запись
+uint8_t page_pos_ptr = 0;			// указатель позиции в странице флеш-памяти, в которую будет выполнена запись
 extern w25_info_t w25_info;
-uint8_t dt1 = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -171,51 +164,6 @@ int main(void)
 		  parserFSM();
 	  }
 
-/*
-	 if (start_meas) {
-		 max30102_shutdown(&max30102, 0);
-		 start_meas = 0;
-		 max30102_clear_fifo(&max30102);
-		 HAL_TIM_Base_Start_IT(&htim4);
-	 }
-
-	 if (stop_meas) {
-		 stop_meas = 0;
-		 max30102_shutdown(&max30102, 1);
-		 //max30102_clear_fifo(&max30102);
-		 HAL_TIM_Base_Stop_IT(&htim4);
-		 __HAL_TIM_SET_COUNTER(&htim4, 0);
-	 }
-
-	 if (reset_sensor) {
-		 reset_sensor = 0;
-		 HAL_TIM_Base_Stop_IT(&htim4);
-		 __HAL_TIM_SET_COUNTER(&htim4, 0);
-		   max30102_reset(&max30102);
-		   max30102_shutdown(&max30102, 1);
-		   max30102_clear_fifo(&max30102);
-		   max30102_set_fifo_config(&max30102, max30102_smp_ave_4, 1, 3);
-
-		    // Sensor settings
-		    max30102_set_led_pulse_width(&max30102, max30102_pw_18_bit);
-		    max30102_set_adc_resolution(&max30102, max30102_adc_4096);
-		    max30102_set_sampling_rate(&max30102, max30102_sr_100);
-		    max30102_set_led_current_1(&max30102, 6.2);
-		    max30102_set_led_current_2(&max30102, 6.2);
-
-		    // Enter SpO2 mode
-		    max30102_set_mode(&max30102, max30102_spo2);
-		    max30102_set_a_full(&max30102, 1);
-
-		    // Initiate 1 temperature measurement
-		    max30102_set_die_temp_en(&max30102, 1);
-		    max30102_set_die_temp_rdy(&max30102, 1);
-
-		    max30102_read(&max30102, 0xFF, en_reg, 1);
-	 }
-	*/
-
-
 	if (tim4_ovflw) {
 		// сброс таймера
 		 __HAL_TIM_SET_COUNTER(&htim4, 0);
@@ -228,12 +176,10 @@ int main(void)
 		 if (max30102_check_ready_data(&max30102)) { // если данные готовы для их анализа
 			 // получение готовых данных для анализа
 			 max30102_get_samples_for_processing(&max30102, ir_out, red_out);
-			 cnt1++;
 
 			 if(calc_end) {
 				 // выполнение расчета сатурации
 				 maxim_heart_rate_and_oxygen_saturation(ir_out, buf_len, red_out, &spo2, &spo2_valid, &heart_rate, &heart_rate_valid);
-				 cnt2++;
 
 				 // проверка на корректность значения сатурации
 				 if (spo2_valid && (spo2 <= 100 && spo2 >=70)) {
