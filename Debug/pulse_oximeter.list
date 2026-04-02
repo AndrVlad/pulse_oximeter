@@ -39,9 +39,9 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  17 .debug_line   000188f8  00000000  00000000  00053a97  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    000902dd  00000000  00000000  0006c38f  2**0
+ 18 .debug_str    000902dc  00000000  00000000  0006c38f  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000050  00000000  00000000  000fc66c  2**0
+ 19 .comment      00000050  00000000  00000000  000fc66b  2**0
                   CONTENTS, READONLY
  20 .debug_frame  000058bc  00000000  00000000  000fc6bc  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
@@ -3064,9 +3064,9 @@ static void MX_GPIO_Init(void)
  80018e6:	f001 f977 	bl	8002bd8 <HAL_GPIO_Init>
 
   /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 1, 0);
  80018ea:	2200      	movs	r2, #0
- 80018ec:	2100      	movs	r1, #0
+ 80018ec:	2101      	movs	r1, #1
  80018ee:	2028      	movs	r0, #40	; 0x28
  80018f0:	f001 f88b 	bl	8002a0a <HAL_NVIC_SetPriority>
   HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
@@ -3412,9 +3412,9 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
  8001ae8:	4619      	mov	r1, r3
  8001aea:	480b      	ldr	r0, [pc, #44]	; (8001b18 <HAL_SPI_MspInit+0x118>)
  8001aec:	f001 f874 	bl	8002bd8 <HAL_GPIO_Init>
-    HAL_NVIC_SetPriority(SPI2_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(SPI2_IRQn, 1, 0);
  8001af0:	2200      	movs	r2, #0
- 8001af2:	2100      	movs	r1, #0
+ 8001af2:	2101      	movs	r1, #1
  8001af4:	2024      	movs	r0, #36	; 0x24
  8001af6:	f000 ff88 	bl	8002a0a <HAL_NVIC_SetPriority>
     HAL_NVIC_EnableIRQ(SPI2_IRQn);
@@ -3514,9 +3514,9 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
  8001b96:	f003 0304 	and.w	r3, r3, #4
  8001b9a:	60fb      	str	r3, [r7, #12]
  8001b9c:	68fb      	ldr	r3, [r7, #12]
-    HAL_NVIC_SetPriority(TIM4_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(TIM4_IRQn, 1, 0);
  8001b9e:	2200      	movs	r2, #0
- 8001ba0:	2100      	movs	r1, #0
+ 8001ba0:	2101      	movs	r1, #1
  8001ba2:	201e      	movs	r0, #30
  8001ba4:	f000 ff31 	bl	8002a0a <HAL_NVIC_SetPriority>
     HAL_NVIC_EnableIRQ(TIM4_IRQn);
@@ -3685,9 +3685,9 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
  8001ca4:	f000 ff98 	bl	8002bd8 <HAL_GPIO_Init>
 
     /* USART1 interrupt Init */
-    HAL_NVIC_SetPriority(USART1_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(USART1_IRQn, 2, 0);
  8001ca8:	2200      	movs	r2, #0
- 8001caa:	2100      	movs	r1, #0
+ 8001caa:	2102      	movs	r1, #2
  8001cac:	2025      	movs	r0, #37	; 0x25
  8001cae:	f000 feac 	bl	8002a0a <HAL_NVIC_SetPriority>
     HAL_NVIC_EnableIRQ(USART1_IRQn);
@@ -5602,7 +5602,7 @@ HAL_StatusTypeDef HAL_Init(void)
 
   /* Use systick as time base source and configure 1ms tick (default clock after Reset is HSI) */
   HAL_InitTick(TICK_INT_PRIORITY);
- 8002766:	200f      	movs	r0, #15
+ 8002766:	2000      	movs	r0, #0
  8002768:	f000 f808 	bl	800277c <HAL_InitTick>
 
   /* Init the low level hardware */

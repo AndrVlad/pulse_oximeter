@@ -60,7 +60,7 @@ UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
 
-uint32_t ir_out[100];	// буфер значений ИК-канала
+uint32_t ir_out[100];	// буфер значений �?К-канала
 uint32_t red_out[100];	// буфер значений канала красного светодиода
 bool tim4_ovflw = 0;	// флаг переполнения таймера
 
@@ -574,7 +574,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(LED_GPIO_Port, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 1, 0);
   HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
