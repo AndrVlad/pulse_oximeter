@@ -1,7 +1,7 @@
 protocol_parser.c:95:6:updateNumAvailableMeasData	7
 protocol_parser.c:130:6:setFSMProtocolState	1
 protocol_parser.c:135:6:fillDataFrame	1
-protocol_parser.c:165:6:fillDataField	6
+protocol_parser.c:165:6:fillDataField	7
 protocol_parser.c:213:6:fillResponseFrame	2
 protocol_parser.c:250:6:sendPreviousResponse	1
 protocol_parser.c:263:6:updateSavedResponse	3
