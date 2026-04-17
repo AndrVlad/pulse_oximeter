@@ -29,6 +29,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  C:/Users/vlado/STM32CubeIDE/workspace_1.12.0/pulse_oximeter/Alghoritms/spo2_algorithm.h \
  C:/Users/vlado/STM32CubeIDE/workspace_1.12.0/pulse_oximeter/Libraries/Inc/SPI_connection.h \
  C:/Users/vlado/STM32CubeIDE/workspace_1.12.0/pulse_oximeter/Libraries/Inc/protocol_parser.h \
+ C:/Users/vlado/STM32CubeIDE/workspace_1.12.0/pulse_oximeter/Libraries/Inc/sensor_utils.h \
  C:/Users/vlado/STM32CubeIDE/workspace_1.12.0/pulse_oximeter/Drivers/W25Q/w25q_spi.h \
  ../Core/Inc/Common.h \
  C:/Users/vlado/STM32CubeIDE/workspace_1.12.0/pulse_oximeter/Drivers/MAX30102/max30102_for_stm32_hal.h
@@ -63,6 +64,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 C:/Users/vlado/STM32CubeIDE/workspace_1.12.0/pulse_oximeter/Alghoritms/spo2_algorithm.h:
 C:/Users/vlado/STM32CubeIDE/workspace_1.12.0/pulse_oximeter/Libraries/Inc/SPI_connection.h:
 C:/Users/vlado/STM32CubeIDE/workspace_1.12.0/pulse_oximeter/Libraries/Inc/protocol_parser.h:
+C:/Users/vlado/STM32CubeIDE/workspace_1.12.0/pulse_oximeter/Libraries/Inc/sensor_utils.h:
 C:/Users/vlado/STM32CubeIDE/workspace_1.12.0/pulse_oximeter/Drivers/W25Q/w25q_spi.h:
 ../Core/Inc/Common.h:
 C:/Users/vlado/STM32CubeIDE/workspace_1.12.0/pulse_oximeter/Drivers/MAX30102/max30102_for_stm32_hal.h:

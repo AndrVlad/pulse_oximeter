@@ -106,7 +106,7 @@ void resetSensor() {
 	// очистка флеш-памяти
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_SET);
     W25_Erase_Chip();
-
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_RESET);
     reset_ready = true;
 
 	return;

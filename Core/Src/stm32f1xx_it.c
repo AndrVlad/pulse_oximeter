@@ -62,6 +62,7 @@ extern TIM_HandleTypeDef htim4;
 extern UART_HandleTypeDef huart1;
 /* USER CODE BEGIN EV */
 extern bool tim4_ovflw;
+extern bool uart1_rx_complete;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -250,7 +251,7 @@ void SPI2_IRQHandler(void)
 void USART1_IRQHandler(void)
 {
   /* USER CODE BEGIN USART1_IRQn 0 */
-
+	uart1_rx_complete = 1;
   /* USER CODE END USART1_IRQn 0 */
   HAL_UART_IRQHandler(&huart1);
   /* USER CODE BEGIN USART1_IRQn 1 */

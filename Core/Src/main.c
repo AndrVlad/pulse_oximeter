@@ -24,6 +24,7 @@
 #include "spo2_algorithm.h"
 #include "SPI_connection.h"
 #include "protocol_parser.h"
+#include "sensor_utils.h"
 #include "w25q_spi.h"
 #include "stdio.h"
 #include "Common.h"
@@ -60,7 +61,7 @@ UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
 
-uint32_t ir_out[100];	// буфер значений �?К-канала
+uint32_t ir_out[100];	// буфер значений �?К-канала
 uint32_t red_out[100];	// буфер значений канала красного светодиода
 bool tim4_ovflw = 0;	// флаг переполнения таймера
 
@@ -76,6 +77,8 @@ uint8_t data_buf[256];				// буфер с данными
 volatile uint16_t page_ptr = 0;		// указатель номера страницы флеш-памяти в которую идет запись
 uint8_t page_pos_ptr = 0;			// указатель позиции в странице флеш-памяти, в которую будет выполнена запись
 extern w25_info_t w25_info;
+uint8_t data[2] = {0};
+bool uart1_rx_complete = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -152,7 +155,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   sensorInit();
-
+  HAL_UART_Receive_IT(&huart1,data,1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -163,6 +166,35 @@ int main(void)
 		  spi_rx_complete = false;
 		  parserFSM();
 	  }
+
+	  // для отладки
+
+	  if(uart1_rx_complete) {
+
+		  HAL_UART_Receive_IT(&huart1,data,1);
+
+		  uart1_rx_complete = 0;
+		  switch(data[0]) {
+		  case '0':
+			  resetSensor();
+			  break;
+		  case '1':
+			  startMeasurement();
+			  break;
+		  case '2':
+			  stopMeasurement();
+			  break;
+		  case '3':
+		      W25_Read_Page(data_buf, data[1], 0, w25_info.PageSize);
+		      HAL_UART_Transmit(&huart1, data_buf, w25_info.PageSize, 100);
+		      break;
+		  }
+		  data[0] = 0;
+		  data[1] = 0;
+
+	  }
+
+
 
 	if (tim4_ovflw) {
 		// сброс таймера
