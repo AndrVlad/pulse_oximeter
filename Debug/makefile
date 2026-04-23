@@ -56,6 +56,9 @@ default.size.stdout \
 OBJDUMP_LIST += \
 pulse_oximeter.list \
 
+OBJCOPY_HEX += \
+pulse_oximeter.hex \
+
 
 # All Target
 all: main-build
@@ -79,12 +82,17 @@ pulse_oximeter.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
+pulse_oximeter.hex: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O ihex $(EXECUTABLES) "pulse_oximeter.hex"
+	@echo 'Finished building: $@'
+	@echo ' '
+
 # Other Targets
 clean:
-	-$(RM) default.size.stdout pulse_oximeter.elf pulse_oximeter.list pulse_oximeter.map
+	-$(RM) default.size.stdout pulse_oximeter.elf pulse_oximeter.hex pulse_oximeter.list pulse_oximeter.map
 	-@echo ' '
 
-secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
+secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_HEX)
 
 fail-specified-linker-script-missing:
 	@echo 'Error: Cannot find the specified linker script. Check the linker settings in the build configuration.'
