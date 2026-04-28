@@ -1,7 +1,7 @@
 Libraries/Src/protocol_parser.o: ../Libraries/Src/protocol_parser.c \
- C:/Users/vlado/STM32CubeIDE/workspace_1.12.0/pulse_oximeter/Libraries/Inc/protocol_common.h \
- C:/Users/vlado/STM32CubeIDE/workspace_1.12.0/pulse_oximeter/Libraries/Inc/protocol_parser.h \
- C:/Users/vlado/STM32CubeIDE/workspace_1.12.0/pulse_oximeter/Libraries/Inc/SPI_Connection.h \
+ C:/Users/Admin/Documents/GitHub/pulse_oximeter/Libraries/Inc/protocol_common.h \
+ C:/Users/Admin/Documents/GitHub/pulse_oximeter/Libraries/Inc/protocol_parser.h \
+ C:/Users/Admin/Documents/GitHub/pulse_oximeter/Libraries/Inc/SPI_Connection.h \
  ../Core/Inc/main.h ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
  ../Core/Inc/stm32f1xx_hal_conf.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h \
@@ -29,11 +29,11 @@ Libraries/Src/protocol_parser.o: ../Libraries/Src/protocol_parser.c \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
- c:\users\vlado\stm32cubeide\workspace_1.12.0\pulse_oximeter\drivers\w25q\w25q_spi.h \
- C:/Users/vlado/STM32CubeIDE/workspace_1.12.0/pulse_oximeter/Libraries/Inc/sensor_utils.h
-C:/Users/vlado/STM32CubeIDE/workspace_1.12.0/pulse_oximeter/Libraries/Inc/protocol_common.h:
-C:/Users/vlado/STM32CubeIDE/workspace_1.12.0/pulse_oximeter/Libraries/Inc/protocol_parser.h:
-C:/Users/vlado/STM32CubeIDE/workspace_1.12.0/pulse_oximeter/Libraries/Inc/SPI_Connection.h:
+ c:\users\admin\documents\github\pulse_oximeter\drivers\w25q\w25q_spi.h \
+ C:/Users/Admin/Documents/GitHub/pulse_oximeter/Libraries/Inc/sensor_utils.h
+C:/Users/Admin/Documents/GitHub/pulse_oximeter/Libraries/Inc/protocol_common.h:
+C:/Users/Admin/Documents/GitHub/pulse_oximeter/Libraries/Inc/protocol_parser.h:
+C:/Users/Admin/Documents/GitHub/pulse_oximeter/Libraries/Inc/SPI_Connection.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 ../Core/Inc/stm32f1xx_hal_conf.h:
@@ -62,5 +62,5 @@ C:/Users/vlado/STM32CubeIDE/workspace_1.12.0/pulse_oximeter/Libraries/Inc/SPI_Co
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h:
-c:\users\vlado\stm32cubeide\workspace_1.12.0\pulse_oximeter\drivers\w25q\w25q_spi.h:
-C:/Users/vlado/STM32CubeIDE/workspace_1.12.0/pulse_oximeter/Libraries/Inc/sensor_utils.h:
+c:\users\admin\documents\github\pulse_oximeter\drivers\w25q\w25q_spi.h:
+C:/Users/Admin/Documents/GitHub/pulse_oximeter/Libraries/Inc/sensor_utils.h:
