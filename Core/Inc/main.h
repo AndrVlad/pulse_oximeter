@@ -65,6 +65,7 @@ extern uint8_t page_pos_ptr;
 extern volatile uint16_t page_ptr;
 extern I2C_HandleTypeDef hi2c1;
 extern uint8_t dt1;
+extern bool tim3_ovflw;
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/

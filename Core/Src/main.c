@@ -27,8 +27,10 @@
 #include "w25q_spi.h"
 #include "stdio.h"
 #include "Common.h"
+#include "sensor_utils.h"
 #include <string.h>
 #include <stdbool.h>
+#include "exp_protocol.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -52,6 +54,7 @@ I2C_HandleTypeDef hi2c1;
 SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi2;
 
+TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
@@ -60,9 +63,9 @@ UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
 
-uint32_t ir_out[100];	// буфер значений �?К-канала
+uint32_t ir_out[100];	// буфер значений �?К-канала
 uint32_t red_out[100];	// буфер значений канала красного светодиода
-bool tim4_ovflw = 0;	// флаг переполнения таймера
+bool tim3_ovflw = 0;	// флаг переполнения таймера
 
 int8_t cnt1,cnt2 = 0;	// счетчики вызовов (для отладки)
 max30102_t max30102;	// объект структуры для работы с микросхемой
@@ -76,6 +79,7 @@ uint8_t data_buf[256];				// буфер с данными
 volatile uint16_t page_ptr = 0;		// указатель номера страницы флеш-памяти в которую идет запись
 uint8_t page_pos_ptr = 0;			// указатель позиции в странице флеш-памяти, в которую будет выполнена запись
 extern w25_info_t w25_info;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -88,6 +92,7 @@ static void MX_TIM3_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_TIM4_Init(void);
 static void MX_TIM2_Init(void);
+static void MX_TIM1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -149,9 +154,13 @@ int main(void)
   MX_I2C1_Init();
   MX_TIM4_Init();
   MX_TIM2_Init();
+  MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
 
-  sensorInit();
+  //sensorInit();
+
+  uart_init();
+  sensorChipInit();
 
   /* USER CODE END 2 */
 
@@ -159,15 +168,16 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  if (spi_rx_complete) {
-		  spi_rx_complete = false;
-		  parserFSM();
-	  }
 
-	if (tim4_ovflw) {
+	if (uart1_rx_complete) {
+		parser_exp();
+		max30102_shutdown(&max30102, 0);
+	}
+
+	if (tim3_ovflw) {
 		// сброс таймера
-		 __HAL_TIM_SET_COUNTER(&htim4, 0);
-		 tim4_ovflw = 0;
+		 __HAL_TIM_SET_COUNTER(&htim3, 0);
+		 tim3_ovflw = 0;
 
 		 // Опрос регистров прерываний и считывание данных с датчика в буферы,
 		 // где они накапливаются для дальнейшей их обработки
@@ -183,8 +193,8 @@ int main(void)
 
 				 // проверка на корректность значения сатурации
 				 if (spo2_valid && (spo2 <= 100 && spo2 >=70)) {
-					 // запись во флеш корректного значения
-					 writeDataToFlash(spo2);
+					 // отправка данных
+					 send_data(spo2);
 				 }
 			 }
 		 }
@@ -211,7 +221,7 @@ void SystemClock_Config(void)
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-  RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV2;
+  RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
@@ -346,6 +356,52 @@ static void MX_SPI2_Init(void)
 }
 
 /**
+  * @brief TIM1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM1_Init(void)
+{
+
+  /* USER CODE BEGIN TIM1_Init 0 */
+
+  /* USER CODE END TIM1_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM1_Init 1 */
+
+  /* USER CODE END TIM1_Init 1 */
+  htim1.Instance = TIM1;
+  htim1.Init.Prescaler = 7200;
+  htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim1.Init.Period = 10;
+  htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim1.Init.RepetitionCounter = 0;
+  htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim1, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM1_Init 2 */
+
+  /* USER CODE END TIM1_Init 2 */
+
+}
+
+/**
   * @brief TIM2 Initialization Function
   * @param None
   * @retval None
@@ -427,9 +483,9 @@ static void MX_TIM3_Init(void)
 
   /* USER CODE END TIM3_Init 1 */
   htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 48000;
+  htim3.Init.Prescaler = 720;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 5;
+  htim3.Init.Period = 4000;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
@@ -441,7 +497,7 @@ static void MX_TIM3_Init(void)
   {
     Error_Handler();
   }
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_OC1;
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
   {
@@ -472,9 +528,9 @@ static void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 1 */
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 720;
+  htim4.Init.Prescaler = 65535;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim4.Init.Period = 4000;
+  htim4.Init.Period = 999;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim4) != HAL_OK)
@@ -514,7 +570,7 @@ static void MX_USART1_UART_Init(void)
 
   /* USER CODE END USART1_Init 1 */
   huart1.Instance = USART1;
-  huart1.Init.BaudRate = 115200;
+  huart1.Init.BaudRate = 250000;
   huart1.Init.WordLength = UART_WORDLENGTH_8B;
   huart1.Init.StopBits = UART_STOPBITS_1;
   huart1.Init.Parity = UART_PARITY_NONE;

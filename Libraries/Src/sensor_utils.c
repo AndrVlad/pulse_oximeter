@@ -55,6 +55,8 @@ void sensorChipInit() {
 	max30102_set_die_temp_en(&max30102, 1);
 	max30102_set_die_temp_rdy(&max30102, 1);
 
+	enableSensorChip();
+
 	return;
 }
 

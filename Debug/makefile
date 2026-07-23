@@ -67,8 +67,8 @@ all: main-build
 main-build: pulse_oximeter.elf secondary-outputs
 
 # Tool invocations
-pulse_oximeter.elf pulse_oximeter.map: $(OBJS) $(USER_OBJS) C:\Users\Admin\Documents\GitHub\pulse_oximeter\STM32F103CBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "pulse_oximeter.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\Admin\Documents\GitHub\pulse_oximeter\STM32F103CBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="pulse_oximeter.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+pulse_oximeter.elf pulse_oximeter.map: $(OBJS) $(USER_OBJS) C:\Users\vlado\STM32CubeIDE\workspace_1.12.0\pulse_oximeter\STM32F103CBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "pulse_oximeter.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\vlado\STM32CubeIDE\workspace_1.12.0\pulse_oximeter\STM32F103CBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="pulse_oximeter.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
