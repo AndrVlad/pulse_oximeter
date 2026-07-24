@@ -34,7 +34,7 @@ void sensorChipInit() {
 
 	// Инициализация микросхемы
 	max30102_init(&max30102, &hi2c1);
-	/*
+
 	max30102_reset(&max30102);
 	max30102_clear_fifo(&max30102);
 	max30102_set_fifo_config(&max30102, max30102_smp_ave_1, 1, 3);
@@ -55,7 +55,7 @@ void sensorChipInit() {
 	// Включение измерения температуры
 	max30102_set_die_temp_en(&max30102, 1);
 	max30102_set_die_temp_rdy(&max30102, 1);
-	*/
+
 	enableSensorChip();
 
 	return;

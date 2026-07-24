@@ -157,10 +157,10 @@ int main(void)
   MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
 
-  //sensorInit();
+
 
   uart_init();
-//  sensorChipInit();
+  sensorChipInit();
 
   /* USER CODE END 2 */
 
@@ -171,9 +171,6 @@ int main(void)
 
 	if (uart1_rx_complete) {
 		parser_exp();
-		uint8_t check;
-		check = max30102_check(&max30102);
-
 	}
 
 	if (tim3_ovflw) {
