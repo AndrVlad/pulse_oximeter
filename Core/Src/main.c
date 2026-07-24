@@ -160,7 +160,7 @@ int main(void)
   //sensorInit();
 
   uart_init();
-  sensorChipInit();
+//  sensorChipInit();
 
   /* USER CODE END 2 */
 
@@ -171,7 +171,9 @@ int main(void)
 
 	if (uart1_rx_complete) {
 		parser_exp();
-		max30102_shutdown(&max30102, 0);
+		uint8_t check;
+		check = max30102_check(&max30102);
+
 	}
 
 	if (tim3_ovflw) {

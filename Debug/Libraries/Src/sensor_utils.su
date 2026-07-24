@@ -1,8 +1,8 @@
 ../Libraries/Src/sensor_utils.c:22:6:sensorSelfCheck	8	static
 ../Libraries/Src/sensor_utils.c:33:6:sensorChipInit	8	static
-../Libraries/Src/sensor_utils.c:64:6:resetSensorChip	8	static
-../Libraries/Src/sensor_utils.c:76:6:stopSensorChip	8	static
-../Libraries/Src/sensor_utils.c:83:6:enableSensorChip	8	static
-../Libraries/Src/sensor_utils.c:94:6:resetSensor	8	static
-../Libraries/Src/sensor_utils.c:117:6:startMeasurement	8	static
-../Libraries/Src/sensor_utils.c:127:6:stopMeasurement	8	static
+../Libraries/Src/sensor_utils.c:65:6:resetSensorChip	8	static
+../Libraries/Src/sensor_utils.c:77:6:stopSensorChip	8	static
+../Libraries/Src/sensor_utils.c:84:6:enableSensorChip	8	static
+../Libraries/Src/sensor_utils.c:95:6:resetSensor	8	static
+../Libraries/Src/sensor_utils.c:118:6:startMeasurement	8	static
+../Libraries/Src/sensor_utils.c:128:6:stopMeasurement	8	static
