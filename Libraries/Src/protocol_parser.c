@@ -11,11 +11,13 @@
 #include "SPI_Connection.h"
 #include "../Drivers/W25Q/w25q_spi.h"
 #include "sensor_utils.h"
+#include "stm32f1xx_hal.h"
 
 #define LIMIT_FLASH_PAGE_NUM 65536
 //#define TEST_VER
 
 extern w25_info_t  w25_info;
+extern UART_HandleTypeDef huart1;
 
 /* раздел объявления переменных */
 
@@ -26,6 +28,7 @@ uint16_t measurement_state = STATE_NOT_READY;		// статус готовнос�
 uint8_t FSM_state;									// текущее состояние FSM
 uint8_t measurement_bytes_num = 0;					// число фактически готовых байт измерения
 bool reset_ready = 0;
+char str2[30];
 
 // хранит информацию о страницах и позициях, которые были считаны с флеш
 struct {
@@ -160,6 +163,8 @@ void fillDataFrame() {
 
 	// сигнализируем модулю приема/передачи SPI о том, что ответ готов
 	response_ready = true;
+
+	HAL_UART_Transmit(&huart1,response,264,1000);
 };
 
 void fillDataField() {
@@ -288,12 +293,18 @@ void parserFSM() {
 #ifndef TEST_VER
 	sendRxCompleteCTRL();
 	// проверка контрольной суммы
+	/*
 	if(!checkCRC32(safe_command_frame, FRAME_LEN-4)) {
 		// формирование ответа - ошибка CRC
 		fillResponseFrame(CRC_ERROR, 0);
 		return;
-	}
+	} */
 #endif
+
+	sprintf(str2,"CMD: %X\r\n",safe_command_frame[2]);
+	HAL_UART_Transmit(&huart1,(uint8_t*)str2,8,1000);
+	sprintf(str2,". \r\n");
+
 	switch(FSM_state) {
 		case CONNECTED_STATE:
 			// анализ полученной команды
@@ -479,7 +490,7 @@ uint32_t calculateCRC32(uint8_t* arg,uint16_t length) {
 /* Инициализация датчика при его подключении */
 void sensorInit() {
 	// инициализация флеш-памяти
-	W25_Ini(0);
+	W25_Ini(1);
 	// инициализация SPI-соединения
 	initSPIConnection();
 
