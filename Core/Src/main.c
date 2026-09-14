@@ -60,7 +60,7 @@ UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
 
-uint32_t ir_out[100];	// буфер значений �?К-канала
+uint32_t ir_out[100];	// буфер значений �?К-канала
 uint32_t red_out[100];	// буфер значений канала красного светодиода
 bool tim4_ovflw = 0;	// флаг переполнения таймера
 
@@ -76,6 +76,8 @@ uint8_t data_buf[256];				// буфер с данными
 volatile uint16_t page_ptr = 0;		// указатель номера страницы флеш-памяти в которую идет запись
 uint8_t page_pos_ptr = 0;			// указатель позиции в странице флеш-памяти, в которую будет выполнена запись
 extern w25_info_t w25_info;
+
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/

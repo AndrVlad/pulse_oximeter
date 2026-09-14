@@ -250,6 +250,10 @@ void fillResponseFrame(uint16_t response_code, uint16_t command_code) {
 
 	// сигнализируем модулю приема/передачи SPI о том, что ответ готов
 	response_ready = true;
+
+	char str[30];
+	sprintf(str,"ANS: %X %X %X tail:%X %X  \r\n",response[0],response[1],response[2],response[258], response[259]);
+	HAL_UART_Transmit(&huart1,(uint8_t*)str,20,1000);
 };
 /* Подготавливает к отправке предыдущий кадр ответа */
 void sendPreviousResponse() {
@@ -293,17 +297,18 @@ void parserFSM() {
 #ifndef TEST_VER
 	sendRxCompleteCTRL();
 	// проверка контрольной суммы
-	/*
+
 	if(!checkCRC32(safe_command_frame, FRAME_LEN-4)) {
 		// формирование ответа - ошибка CRC
+		char *crc_err = "CRC_ERR";
 		fillResponseFrame(CRC_ERROR, 0);
+		HAL_UART_Transmit(&huart1,(uint8_t*)crc_err,7,1000);
 		return;
-	} */
+	}
 #endif
 
 	sprintf(str2,"CMD: %X\r\n",safe_command_frame[2]);
 	HAL_UART_Transmit(&huart1,(uint8_t*)str2,8,1000);
-	sprintf(str2,". \r\n");
 
 	switch(FSM_state) {
 		case CONNECTED_STATE:
