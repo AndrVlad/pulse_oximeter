@@ -8,6 +8,9 @@
 #include "SPI_Connection.h"
 #include "protocol_common.h"
 #include "protocol_parser.h"
+#include "stm32f1xx_hal.h"
+
+extern UART_HandleTypeDef huart1;
 
 bool spi_rx_complete, response_ready = false;
 bool spi_state;
@@ -34,6 +37,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
         GPIO_InitStruct.Pin = GPIO_PIN_14;
         GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
         GPIO_InitStruct.Pull = GPIO_NOPULL;
+        GPIO_InitStruct.Speed =  GPIO_SPEED_FREQ_HIGH;
         HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 		// проверка на наличие готового ответа для отправки
@@ -54,6 +58,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
         GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
         HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
     }
+
 }
 
 void fillBuffer(uint8_t* buf, uint8_t fill_symbol) {
@@ -95,6 +100,7 @@ void switchBuffer(bool spi_state) {
 		spi_tx_ptr = &dummy_frame[0];
 		spi_rx_ptr = &response_frame[0];
 	}
+
 };
 /* Обработчик прерывания по окончанию передачи/приема всего кадра */
 void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)

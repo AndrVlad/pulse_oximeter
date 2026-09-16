@@ -18,6 +18,7 @@
 
 extern w25_info_t  w25_info;
 extern UART_HandleTypeDef huart1;
+extern bool spi_state;
 
 /* раздел объявления переменных */
 
@@ -266,6 +267,9 @@ void sendPreviousResponse() {
 
 	// сигнализируем модулю приема/передачи SPI о том, что ответ готов
 	response_ready = true;
+	char str[30];
+	sprintf(str,"ANS: %X %X %X tail:%X %X  \r\n",response[0],response[1],response[2],response[258], response[259]);
+	HAL_UART_Transmit(&huart1,(uint8_t*)str,20,1000);
 	return;
 };
 
@@ -309,6 +313,10 @@ void parserFSM() {
 
 	sprintf(str2,"CMD: %X\r\n",safe_command_frame[2]);
 	HAL_UART_Transmit(&huart1,(uint8_t*)str2,8,1000);
+
+	char str[30];
+	sprintf(str,"spi_state_next: %d\r\n",spi_state);
+	HAL_UART_Transmit(&huart1,(uint8_t*)str,19,1000);
 
 	switch(FSM_state) {
 		case CONNECTED_STATE:
