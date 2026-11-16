@@ -1,6 +1,6 @@
-spo2_algorithm.c:74:6:maxim_heart_rate_and_oxygen_saturation	26
-spo2_algorithm.c:216:6:maxim_find_peaks	1
-spo2_algorithm.c:230:6:maxim_peaks_above_min_height	8
-spo2_algorithm.c:260:6:maxim_remove_close_peaks	6
-spo2_algorithm.c:289:6:maxim_sort_ascend	4
-spo2_algorithm.c:307:6:maxim_sort_indices_descend	4
+../Alghoritms/spo2_algorithm.c:74:6:maxim_heart_rate_and_oxygen_saturation	26
+../Alghoritms/spo2_algorithm.c:216:6:maxim_find_peaks	1
+../Alghoritms/spo2_algorithm.c:230:6:maxim_peaks_above_min_height	8
+../Alghoritms/spo2_algorithm.c:260:6:maxim_remove_close_peaks	6
+../Alghoritms/spo2_algorithm.c:289:6:maxim_sort_ascend	4
+../Alghoritms/spo2_algorithm.c:307:6:maxim_sort_indices_descend	4
