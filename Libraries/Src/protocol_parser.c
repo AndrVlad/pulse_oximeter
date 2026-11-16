@@ -165,7 +165,10 @@ void fillDataFrame() {
 	// сигнализируем модулю приема/передачи SPI о том, что ответ готов
 	response_ready = true;
 
-	HAL_UART_Transmit(&huart1,response,264,1000);
+	char str[44];
+	sprintf(str,"DATA: %02X %02X %02X %02X %02X %02X %02X crc: %02X %02X %02X %02X  \r\n",response[0],response[1],response[2], response[3], response[4], response[5], response[6], response[260], response[261],
+			response[262], response[263]);
+	HAL_UART_Transmit(&huart1,(uint8_t*)str,44,1000);
 };
 
 void fillDataField() {
@@ -252,9 +255,10 @@ void fillResponseFrame(uint16_t response_code, uint16_t command_code) {
 	// сигнализируем модулю приема/передачи SPI о том, что ответ готов
 	response_ready = true;
 
-	char str[30];
-	sprintf(str,"ANS: %X %X %X tail:%X %X  \r\n",response[0],response[1],response[2],response[258], response[259]);
-	HAL_UART_Transmit(&huart1,(uint8_t*)str,20,1000);
+	char str[37];
+	sprintf(str,"ANS: %02X %02X %02X %02X crc: %02X %02X %02X %02X  \r\n",response[0],response[1],response[2], response[3], response[260], response[261],
+			response[262], response[263]);
+	HAL_UART_Transmit(&huart1,(uint8_t*)str,37,1000);
 };
 /* Подготавливает к отправке предыдущий кадр ответа */
 void sendPreviousResponse() {
@@ -267,9 +271,10 @@ void sendPreviousResponse() {
 
 	// сигнализируем модулю приема/передачи SPI о том, что ответ готов
 	response_ready = true;
-	char str[30];
-	sprintf(str,"ANS: %X %X %X tail:%X %X  \r\n",response[0],response[1],response[2],response[258], response[259]);
-	HAL_UART_Transmit(&huart1,(uint8_t*)str,20,1000);
+	char str[42];
+	sprintf(str,"PREV_ANS: %02X %02X %02X %02X crc: %02X %02X %02X %02X  \r\n",response[0],response[1],response[2], response[3], response[260], response[261],
+			response[262], response[263]);
+	HAL_UART_Transmit(&huart1,(uint8_t*)str,42,1000);
 	return;
 };
 
@@ -311,12 +316,8 @@ void parserFSM() {
 	}
 #endif
 
-	sprintf(str2,"CMD: %X\r\n",safe_command_frame[2]);
-	HAL_UART_Transmit(&huart1,(uint8_t*)str2,8,1000);
-
-	char str[30];
-	sprintf(str,"spi_state_next: %d\r\n",spi_state);
-	HAL_UART_Transmit(&huart1,(uint8_t*)str,19,1000);
+	sprintf(str2,"CMD: %02X\r\n",safe_command_frame[2]);
+	HAL_UART_Transmit(&huart1,(uint8_t*)str2,9,1000);
 
 	switch(FSM_state) {
 		case CONNECTED_STATE:

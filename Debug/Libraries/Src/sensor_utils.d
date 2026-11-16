@@ -27,7 +27,7 @@ Libraries/Src/sensor_utils.o: ../Libraries/Src/sensor_utils.c \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
- c:\users\admin\documents\github\pulse_oximeter\drivers\w25q\w25q_spi.h \
+ C:/Users/Admin/Documents/GitHub/pulse_oximeter/Alghoritms/../Drivers/W25Q/w25q_spi.h \
  C:/Users/Admin/Documents/GitHub/pulse_oximeter/Libraries/Inc/protocol_parser.h \
  C:/Users/Admin/Documents/GitHub/pulse_oximeter/Libraries/Inc/SPI_Connection.h \
  ../Core/Inc/Common.h \
@@ -61,7 +61,7 @@ C:/Users/Admin/Documents/GitHub/pulse_oximeter/Libraries/Inc/sensor_utils.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h:
-c:\users\admin\documents\github\pulse_oximeter\drivers\w25q\w25q_spi.h:
+C:/Users/Admin/Documents/GitHub/pulse_oximeter/Alghoritms/../Drivers/W25Q/w25q_spi.h:
 C:/Users/Admin/Documents/GitHub/pulse_oximeter/Libraries/Inc/protocol_parser.h:
 C:/Users/Admin/Documents/GitHub/pulse_oximeter/Libraries/Inc/SPI_Connection.h:
 ../Core/Inc/Common.h:

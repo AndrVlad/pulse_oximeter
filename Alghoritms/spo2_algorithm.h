@@ -68,6 +68,7 @@
 #define min(x,y) ((x) < (y) ? (x) : (y)) //Defined in Arduino.h
 
 #include <stdio.h>
+#include <stdint.h>
 #include <stdbool.h>
 //uch_spo2_table is approximated as  -45.060*ratioAverage* ratioAverage + 30.354 *ratioAverage + 94.845 ;
 
